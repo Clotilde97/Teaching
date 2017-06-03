@@ -1,0 +1,91 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{amsmath}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{float} 
+\usepackage{amsfonts}
+\parskip 0.1in
+
+
+ \usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+ 
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{G28 Workshop One}
+\lhead{Charles Rahal}
+\rfoot{Page \thepage}
+ 
+\begin{document}
+\small
+\subsubsection*{Econometrics with Financial Applications: Workshop One}
+\textit{In this class we are going to learn how to download data from Yahoo! Finance directly through EViews 8 and then estimate/identify an AR(p) model. Finally, we are going to create \emph{H}-step dynamic forecasts from our models (H=12 in our example). Following the exercise is a program to automatically run all of the elements in a script (.prg)}.
+\begin{enumerate}
+\item Open EViews 8 and then \emph{Addins}$\rightarrow$\emph{Download Addins}$\rightarrow$\emph{Download GetStocks}.
+\item Using the menus, download monthly JP Morgan/Goldman Sachs (tickers = \{\emph{jpm}, \emph{gs}\}) data from 2000/01/01 to 2014/12/01.
+\item Alternatively, use the command line interface:
+\begin{center}
+\footnotesize
+\texttt{getstocks(a,freq=3,i=2, start=2000/01/01, end=2014/12/01) gs jpm}\\
+\end{center}
+Failing this: import them from Canvas using the \emph{File}$\rightarrow$\emph{New}$\rightarrow$\emph{Workfile} and create a dated, regular frequency(monthly) workfile from 2000/01/01 to 2014/12/01 then \emph{File}$\rightarrow$\emph{Import}$\rightarrow$\emph{Import from file}.
+\item Plot the series in log levels:
+\footnotesize
+\begin{center}
+\texttt{graph plottedprices.line log(gs\_adjclose) log(jpm\_adjclose})
+\end{center}
+\item Then lets plot the log first difference of returns using the following command to plot the two series:
+\begin{center}
+\footnotesize
+\texttt{graph plottedprices1.line dlog(gs\_adjclose) dlog(jpm\_adjclose)}
+\end{center}
+Alternatively, open the two series as a group, then click \emph{View}$\rightarrow$\emph{Graph} and change the view to log diff.
+\item Using the above plots, the autocorrelation function (\texttt{log(jpm\_adjclose).correl(12)}, \texttt{log(gs\_adjclose).correl(12)}, or through \emph{View}$\rightarrow$\emph{Correlogram}), or unit root tests, determine the stationarity of the series.
+\item Estimate a series of AR(p) models for both of your stationary/stationary transformed series, including a constant. Do this either through the \emph{Object}$\rightarrow$\emph{New Object}$\rightarrow$\emph{Equation} menus inputting \texttt{dlog(gs\_adjclose) c AR(1 to \emph{p})}, etc., or use the command line:
+\begin{center}
+\texttt{equation eq1.ls dlog(jpm\_adjclose) c ar(1 to \emph{p})}
+\end{center}
+changing \emph{p} to 1,$\hdots$,12. Store either the AIC or the BIC from each estimation.
+\item Use these values to determine the most suitable lag length (\emph{p}), and then consider the residual diagnostics through the \emph{View} window.
+\item Using your preferred AR model, expand the work-file by double clicking on \emph{Range}, and forecast the equation through \emph{Proc}$\rightarrow$\emph{Forecast}. Create a dynamic forecast for 2015m1$\rightarrow$2015m12.
+\item See the program on the following page for how to do the last step, and all of the preceding ones in a `batch' environment. Download the program from Canvas and run it automatically by double clicking the \emph{.prg} file or \emph{File}$\rightarrow$\emph{New}$\rightarrow$\emph{Program}.
+\item \textbf{Optional Homework}: Extend this to an ARMA(p,q) model, with \emph{max(p,q)=6}.
+\end{enumerate}
+\newpage
+\subsubsection*{Program for Workshop One}
+\noindent
+getstocks(a,freq=3,i=2, start=2000/01/01, end=2014/12/01) gs jpm\\
+graph serieslevels.line gs\_adjclose jpm\_adjclose\\
+graph seriesdlog.line dlog(gs\_adjclose) dlog(jpm\_adjclose)\\
+!sig=1\\
+!maxp=20\\
+for \%series gs\_adjclose jpm\_adjclose\\
+\indent smpl @first 2014m12\\
+\indent	freeze(temptb) log(\{\%series\}).uroot(kpss)\\
+\indent	!lm = @val(temptb(7,5))\\
+\indent	!crit = @val(temptb(8+!sig,5))\\
+\indent	delete temptb\\
+\indent	if !lm$>$!crit then\\
+\indent \indent		!diff=1\\
+\indent	else\\
+\indent \indent		!diff=0\\
+\indent	endif\\
+\indent	!aic=999999999999999999999999999999999\\
+\indent	vector(!maxp) \{\%series\}\_storeaic\\
+\indent	for !p = 1 to !maxp\\
+\indent \indent		equation eq\{!p\}.ls dlog(\{\%series\},!diff) c ar(1 to !p)\\
+\indent \indent		\{\%series\}\_storeaic(!p)=eq\{!p\}.@aic\\
+\indent \indent		if eq\{!p\}.@aic$<$!aic then\\
+\indent \indent \indent			!aic =eq\{!p\}.@aic\\
+\indent \indent \indent			!bestp=!p\\
+\indent \indent		endif\\
+\indent \indent		delete eq\{!p\}\\
+\indent	next\\
+\indent	equation besteq\_\{\%series\}.ls dlog(\{\%series\},!diff) c ar(1 to !bestp)\\
+\indent	pagestruct(freq=m,start=2000m1,end=2015m12)\\
+\indent	smpl 2015m1 2015m12\\
+\indent	besteq\_\{\%series\}.forecast(f=na) \{\%series\}\_f\\
+next
+\end{document}
