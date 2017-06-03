@@ -1,0 +1,90 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage{amsmath}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{float} 
+\usepackage{amsfonts}
+\usepackage{url}
+\usepackage{hyperref}
+\parskip 0.1in
+
+
+ \usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+ 
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{G28 Workshop Two}
+\lhead{Charles Rahal}
+\rfoot{Page \thepage}
+ 
+\begin{document}
+\small
+\subsubsection*{Econometrics with Financial Applications: Workshop Two}
+\textit{In this workshop we will download two series (the US GDP deflator and the number of passenger car registrations in New Zealand) from FRED and examine their stationarity. We will then consider the problem of a spurious regression. As always, a program to conduct all of the estimations and tests follows the exercise.}
+\begin{enumerate}
+\item Download the GDP Deflator and the number of passenger car registrations in New Zealand: Open EViews: \emph{File}$\rightarrow$\emph{Open}$\rightarrow$\emph{Database}$\rightarrow$\emph{FRED}$\rightarrow$\emph{EasyQuery}: `nzlsacrmismei' and `gdpdef' in the `Name Matches' box. 
+\item You might want to use the \texttt{rename nzlsacrmismei nzcarreg} command.
+\item Alternatively, open a new workfile: monthly 1961m1 $\rightarrow$ 2014m11 and type:
+\begin{center}
+\texttt{copy fred::gdpdef untitled::gdpdef\\
+copy fred::nzlsacrmismei untitled::nzcarreg}
+\end{center}
+Or import it from the computerclasstwodata.xlsx on Canvas.
+\item Plot both the log levels, and the first difference of the logarithms as a line graph: rescale the graph by switching one of the series to the right axis via menus, or with commands:
+
+\begin{center}
+\texttt{graph linegraph1.line log(gdpdef) log(nzcarreg)\\
+linegraph1.setelem(2) axis(right)}
+
+\texttt{graph linegraph2.line dlog(gdpdef) dlog(nzcarreg)\\
+linegraph2.setelem(2) axis(right)}
+\end{center}
+
+\item Consider the stationarity of these series using the graphs above. Then conduct ADF (\emph{Open}$\rightarrow$\emph{View}$\rightarrow$\emph{Unit Root Test}$\rightarrow$\emph{ADF Test}) unit root tests using all deterministic specifications at levels and first differences. What can we conclude from the $p$ values? What is the null hypothesis of this test? Access the dialog directly using:
+\begin{center}
+\texttt{gdpdef.uroot}
+\end{center}
+\item Check the robustness of your results using a different unit root test (in batch programming only - why? Because some commands, by default, will bring up the dialog when used from the command line, even if you fully specify their options\footnote{\url{http://forums.eviews.com/viewtopic.php?f=5\&t=6755}}):
+\begin{center}
+\texttt{freeze(temptb) gdpdef.uroot(kpss)} 
+\end{center}
+ Why is the KPSS a suitable alternative? Why does EViews present no $p$-values? How do we interpret the results? Do they concur with the ADF tests?
+ \item Estimate an equation of log(gdpdef) on log(nzcarreg) with a constant and a trend using the menus or the command line:
+ \begin{center}
+\texttt{equation eq1.ls log(gdpdef) c @trend log(nzcarreg)}
+\end{center}
+ What are the signs of a spurious regression? Is there any indication of this occuring here? Look at the $R^2$, t-values, F-value, and DW statistic.
+ \item Now estimate the model in log first differences:
+ \begin{center}
+\texttt{equation eq1.ls dlog(gdpdef) c @trend dlog(nzcarreg)}
+\end{center}
+Are there any signs of a spurious regression occuring here?
+\item See the program on the following page for all commands in a `batch' environment. Download the program from Canvas and run it automatically by double clicking the \emph{.prg} file or \emph{File}$\rightarrow$\emph{New}$\rightarrow$\emph{Program}.
+\end{enumerate}
+\newpage
+\subsubsection*{Program for Workshop Two}
+wfcreate m 2000m1 2014m9\\
+copy fred::gdpdef untitled::gdpdef\\
+copy fred::nzlsacrmismei untitled::nzcarreg\\
+graph linegraph1.line log(gdpdef) log(nzcarreg)\\
+linegraph1.setelem(2) axis(right)\\
+graph linegraph2.line dlog(gdpdef) dlog(nzcarreg)\\
+linegraph2.setelem(2) axis(right)\\
+for \%series gdpdef nzcarreg\\
+\indent	freeze(\{\%series\}\_d0) \{\%series\}.correl\\
+\indent	freeze(\{\%series\}\_d1) d(\{\%series\},1).correl\\
+\indent	freeze(\{\%series\}\_d2) d(\{\%series\},2).correl\\
+\indent for \%test adf kpss\\
+\indent \indent		for \%det const trend\\
+\indent \indent \indent for !k = 0 to 2\\
+\indent \indent \indent \indent			freeze(\{\%series\}\_\{\%det\}\_\{\%test\}\_d\{!k\})	\{\%series\}.uroot(\{\%test\},\{\%det\},dif=!k)\\
+\indent \indent \indent next\\
+\indent \indent		next\\
+\indent	next\\
+next\\
+equation eq1.ls log(gdpdef) c @trend log(nzcarreg)\\
+equation eq2.ls dlog(gdpdef) c @trend dlog(nzcarreg)\\
+\end{document}
