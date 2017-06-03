@@ -1,0 +1,116 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{amsmath}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{float} 
+\usepackage{amsfonts}
+\parskip 0.1in
+\usepackage[margin=1.4in]{geometry}
+
+ \usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+ 
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{G28 Workshop Four}
+\lhead{Charles Rahal}
+\rfoot{Page \thepage}
+ 
+\begin{document}
+\small
+\subsubsection*{Econometrics with Financial Applications: Workshop Four}
+\textit{In this class we'll estimate a vector error correction model and then write a program with rolling windows to show the stability of the cointegrating rank$\backslash$vector.}
+\begin{enumerate}
+\item Download three series: \emph{indpro} (ind. prod), \emph{pce} (cons) and \emph{m2real} (M2):
+\begin{center}
+\texttt{wfcreate m 1970m1 2014m9\\
+fetch FRED::\emph{series}}
+\end{center}
+\item Again plot the three series:
+\begin{center}
+\texttt{graph plottedseries.line log(indpro) log(pce) log(m2real) \\
+plottedseries.seetelem(1) axis(right)}
+
+\end{center}
+\item Run a series of ADF tests to determine their stationarity. 
+\item Generate three new variables and group them:
+\begin{center}
+\texttt{group threeserieslogged lindpro lpce lm2real}
+\end{center}
+\item To run Johansen cointegration tests, click \emph{View}$\rightarrow$\emph{Cointegration Test}$\rightarrow$\emph{Johansen Test} from VAR or Group objects. While $k$ is typically chosen through an IC on a VAR in first differences, try the tests for various lag lengths:
+\begin{center}
+\texttt{freeze(cointtest\{!k\}) threeserieslogged.coint(s,!k)}
+\end{center}
+\item Now try the VAR in first differences as before:\\
+\begin{center}
+\texttt{
+var firstdifferences.ls 1 4 d(lindpro) d(lpce) d(lm2real)
+firstdifferences.laglen(12)
+}
+
+\end{center}
+\item Lets now consider how stable this relationship is by estimating the test as a rolling window:
+\begin{center}
+\texttt{vector(240) ranks\\
+for !k = 1 to 240\\
+smpl @first+!k @last-240+!k\\
+freeze(vecmtable{!k}) threeserieslogged.coint(s,4)\\
+ranks(!k) = vecmtable{!k}(13,4)\\
+next\\
+freeze(cointegratingranks) ranks.line}
+\end{center}
+Experiment with window size? What can we conclude? What was our hypothesis? Does money affect long run production or consumption?
+\item Lets test whether money does not enter into the long run relationship:
+\begin{center}
+\texttt{
+var firstvecm\\
+firstvecm.append(coint) b(1,3)=0\\
+firstvecm.ec(c,1,restrict) 1 1 lpce lindpro lm2real
+}
+\end{center}
+First a VEC, `firstvecm' is declared, then a restriction is appended to `firstvecm', finally `firstvecm' is estimated with that restriction imposed. Alternatively, this can be imposed on a standard VECM: \emph{Proc}$\rightarrow$\emph{Specify/Estimate}$\rightarrow$\emph{VECM Restrictions}$\rightarrow$\emph{Impose Restrictions(B(1,3)=0).}
+\item View the cointegrating graph (\emph{View}$\rightarrow$\emph{Cointegrating Graph}).
+\item Consider the program on the following page for how to run all of these commands in a batch environment.
+\end{enumerate}
+\newpage
+\subsubsection*{Program for Workshop Four}
+\noindent wfcreate m 1959m1 2014m09\\
+fetch fred::indpro\\
+fetch fred::m2real\\
+fetch fred::pce\\
+genr lindpro=log(indpro)\\
+genr lpce=log(pce)\\
+genr lm2real=log(m2real)\\
+graph loggedseries.line lindpro lpce lm2real\\
+loggedseries.setelem(1) axis(right)\\
+for \%series lindpro lpce lm2real\\
+\indent	for \%det const trend\\
+\indent \indent		freeze(\{\%series\}\_\{\%det\}\_d0) \{\%series\}.uroot(adf,\{\%det\},dif=0)\\
+\indent \indent		freeze(\{\%series\}\_\{\%det\}\_d1) \{\%series\}.uroot(adf,\{\%det\},dif=1)\\
+\indent \indent		freeze(\{\%series\}\_\{\%det\}\_d2) \{\%series\}.uroot(adf,\{\%det\},dif=2)\\
+\indent	next\\
+\indent	freeze(\{\%series\}\_d0) \{\%series\}.correl\\
+\indent	freeze(\{\%series\}\_d1) d(\{\%series\},1).correl\\
+\indent	freeze(\{\%series\}\_d2) d(\{\%series\},2).correl\\
+next\\
+group threeserieslogged lindpro lpce lm2real\\
+vector(240) ranks\\
+for !j = 1 to 240\\
+\indent	smpl @first+!j @last-240+!j\\
+\indent	var varfirstdifferences.ls 1 4 d(lpce) d(lm2real) d(lindpro)\\
+\indent	varfirstdifferences.laglen(12,mname=matrixlags\{!j\})\\
+\indent	!lags=matrixlags\{!\j\}(14,5)\\
+\indent	freeze(vecmtable!j) threeserieslogged.coint(s,!lags)\\
+\indent	ranks(!j)=vecmtable!j(13,4)\\
+next\\
+freeze(cointegratingranks) ranks.line\\
+smpl @all\\
+var firstvecm\\
+firstvecm.append(coint) b(1,3)=0\\
+firstvecm.ec(c,1,restrict) 1 1 lpce lindpro lm2real\\
+
+
+
+\end{document}
