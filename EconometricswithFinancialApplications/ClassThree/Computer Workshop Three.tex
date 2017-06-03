@@ -1,0 +1,111 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage{amsmath}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{float} 
+\usepackage{amsfonts}
+\parskip 0.1in
+ \usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+ 
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{G28 Workshop Three}
+\lhead{Charles Rahal}
+\rfoot{Page \thepage}
+ 
+\begin{document}
+\small
+\subsubsection*{Econometrics with Financial Applications: Workshop Three}
+\begin{enumerate}
+\item Download the example workfile from Lutkepol (2007) from Canvas or from:
+\begin{center}
+\url{http://www.eviews.com/EViews8/data/wgmacro.wf1}
+\end{center}
+\item Import the workfile automatically using the new command:
+\begin{center}
+\texttt{import $<$yourfilepath$>\backslash$wgmacro}
+\end{center}
+Adjust the sample range to include all observations with command: \texttt{smpl @all}.
+\item Plot the three series in levels, log levels and log first differences using the three pre-generated series in the workfile:
+\begin{center}
+\texttt{graph tsplot1.line consumption income investment\\
+graph tsplot2.line lconsumption lincome linvestment\\
+graph tsplot3.line dlconsumption dlincome dlinvestment\\}
+\end{center}
+\item Using the plots, unit root tests (Workshop Two) (\texttt{\{\%Series\}.uroot}) and autocorrelation functions (\texttt{\{\%Series\}.correl}), assess the stationarity of each series.
+\item Assuming the three series are I(1), estimate a VAR(4) model in log first differences with least squares in the following three ways: 1.) \emph{Select all three variables}$\rightarrow$\emph{Open}$\rightarrow$\emph{As VAR}, 2.) \emph{Object}$\rightarrow$\emph{New Object}$\rightarrow$\emph{VAR} and type in your three endogenous variables (dlincome, dlinvestment, dlconsumption) with lag lengths 1 4 (\emph{why?}), 3.) In the command window:
+\begin{center}
+\texttt{var var1.ls 1 4 dlincome dlinvestment dlconsumption}
+\end{center}
+\item Lets now consider the number of lags to use: \emph{View}$\rightarrow$\emph{Lag Structure}$\rightarrow$\emph{Lag Length Criteria} and then re-estimate the model using the preferred lag length:
+\begin{center}
+\texttt{var1.laglen(8)\\
+var var1.ls 1 2 dlincome dlinvestment dlconsumption}
+\end{center}
+See the accompanying program for how to do write a script to determine and estimate a var model with a suitable lag length.
+\item Lets now test for block-exogenity and Granger Causality. Using the inbuilt EViews menus:\emph{View}$\rightarrow$\emph{Lag Structure}$\rightarrow$\emph{Granger Causality/Block Exogeneity}. Alternatively, you can use:
+\begin{center}
+\texttt{var1.testexog}
+\end{center}
+How do we interpret these results? What can we conclude?
+\item Lets check our results by doing individual Wald tests. This is more tricky. We have to make the VAR into a system then estimate it by OLS: \emph{Proc}$\rightarrow$\emph{Make System}$\rightarrow$\emph{Order by Variable}$\rightarrow$\emph{Proc}$\rightarrow$\emph{Estimate}$\rightarrow$\emph{View}$\rightarrow$\emph{Coefficient Diagnostics}$\rightarrow$\emph{Wald Coefficient Tests}. Test out some restrictions which correspond to the block-exogenity and Granger Causality tests which you undertook on the VAR in menus - can you get the same numbers? For command line/programming guidance on this - see the program on the following page.
+\item Finally, estimate the impulse responses to each variable from a shock from each other variable by using the menus: \emph{View}$\rightarrow$\emph{Impulse Response}, or by using the command line:
+\begin{center}
+\texttt{var1.impulse(10,m,a,se=a) dlconsumption dlincome dlinvestment @ dlconsumption dlincome dlinvestment}
+\end{center}
+How do we interpret the results form this?\\
+\item \textbf{Optional Homework:} Change the impulse defintions and the orderings to see how the effects change.
+\end{enumerate}
+\newpage
+\subsubsection*{Program for Workshop Three}
+import c:$\backslash$wgmacro\\
+!maxvarlags=4\\
+matrix(3,!maxvarlags) ic\_mat\\
+graph tsplot1.line consumption income investment\\
+graph tsplot2.line lconsumption lincome linvestment\\
+graph tsplot3.line dlconsumption dlincome dlinvestment\\
+rename dlconsumption dlcons\\
+rename dlincome dlinc\\
+rename dlinvestment dlinv 'rename due to EViews 24 character limit\\
+for \%series dlcons dlinc dlinv\\	
+\indent	for \%test adf kpss\\
+\indent \indent		for \%det const trend\\
+\indent \indent \indent		freeze(\{\%series\}\_\{\%det\}\_\{\%test\}\_d0)	\{\%series\}.uroot(\{\%test\},\{\%det\},dif=0)\\
+\indent \indent \indent		freeze(\{\%series\}\_\{\%det\}\_\{\%test\}\_d1)	\{\%series\}.uroot(\{\%test\},\{\%det\},dif=1)\\
+\indent \indent \indent		freeze(\{\%series\}\_\{\%det\}\_\{\%test\}\_d2)	\{\%series\}.uroot(\{\%test\},\{\%det\},dif=2)\\
+\indent \indent		next\\
+\indent	next\\
+\indent	freeze(\{\%series\}\_d0) \{\%series\}.correl\\
+\indent	freeze(\{\%series\}\_d1) d(\{\%series\},1).correl\\
+\indent	freeze(\{\%series\}\_d2) d(\{\%series\},2).correl\\
+next\\
+!aic = 999999999999999999999\\
+!schwarz=99999999999999999\\
+!hq=9999999999999999999999\\
+for !p = 1 to !maxvarlags	\\
+\indent	var var{!p}.ls 1 !p dlcons dlinc dlinv\\
+\indent	!iccounter=1\\
+\indent	for \%IC aic schwarz hq\\
+\indent \indent		ic\_mat(!iccounter,!p)=var1.@\{\%IC\}\\
+\indent \indent		if var\{!p\}.@\{\%IC\}$<$!\{\%IC\} then\\
+\indent \indent	\indent	!bestlag\{\%IC\}=!p\\
+ \indent \indent \indent			!\{\%IC\}=var\{!p\}.@\{\%IC\}\\
+\indent \indent		endif\\
+\indent	!iccounter=+!iccounter+1\\
+\indent	next	\\
+next\\
+var varaic.ls 1 !bestlagaic dlcons dlinc dlinv\\
+var varschwarz.ls 1 !bestlagschwarz dlcons dlinc dlinv\\
+var varhq.ls 1 !bestlaghq dlcons dlinc dlinv\\
+varaic.laglen(8)\\
+varaic.testexog\\
+varaic.makesystem(n=varsystem)\\
+varsystem.ls\\
+varsystem.wald c(3)=c(4)=0	'granger causality test\\
+varsystem.wald c(3)=c(4)=c(5)=c(6)=0 'block exogeneity test\\
+varaic.impulse(10,m,a,se=a) dlcons dlinc dlinv @ dlcons dlinc dlinv\\
+\end{document}
