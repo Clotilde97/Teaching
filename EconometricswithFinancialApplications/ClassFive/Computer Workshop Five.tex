@@ -1,0 +1,107 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{amsmath}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{float} 
+\usepackage{amsfonts}
+\parskip 0.1in
+\usepackage[margin=1.4in]{geometry}
+
+ \usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+ 
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{G28 Workshop Five}
+\lhead{Charles Rahal}
+\rfoot{Page \thepage}
+ 
+\begin{document}
+\small
+\subsubsection*{Econometrics with Financial Applications: Workshop Five}
+\textit{In this class we will give a brief introduction to basic volatility modeling in EViews}
+\begin{enumerate}
+\item Begin by importing the data from the .xls spreadsheet `fxdata.csv':
+\begin{center}
+\texttt{wfopen C:$\backslash<$insert\_path$>$fxdata.csv}
+\end{center}
+\item Then, generate five new return series using the \texttt{genr} command, plot a time plot of each returns series, then merge them by right clicking all at once, or using a command such as:
+\begin{center}
+\texttt{graph all\_g.merge belize\_g kazahk\_g kenya\_g mexico\_g usd\_g}
+\end{center}
+\item What do the plots tell us about the series?
+\item Using either the code written in Workshop One, or the \texttt{arimasel} add-in, identify an optimal AR(p) up to ten lags for one or more of the series.
+\item Test for ARCH effects: \emph{View}$\rightarrow$\emph{Residual Diagonostics}$\rightarrow$\emph{Heteroskedasticity Tests}$\rightarrow$\emph{ARCH}, or (for an AR(4) model of GBP/Belize) via the command window:
+
+\begin{center}
+\texttt{equation belize\_eq.ls pc\_belize c ar(1) ar(2) ar(3) ar(4)\\
+belize\_eq.archtest(4)}
+\end{center}
+What do the F-tests tell us about the properties of these series?
+\item Estimate a GARCH(1,1): \emph{Proc}$\rightarrow$\emph{Specify}$\rightarrow$\emph{ARCH}$\rightarrow$\emph{GARCH/TARCH}:
+\begin{center}
+\texttt{equation garch11.arch pc\_belize c}
+\end{center}
+\item then plot the estimated conditional standard deviation graph:
+\begin{center}
+\texttt{freeze(garch11\_cond\_stdev) garch11.garch}
+\end{center}
+or, alternatively, the estimated conditional variance
+\begin{center}
+\texttt{freeze(garch11\_cond\_var) garch11.garch(v)}
+\end{center}
+\item We can show this is the graph from creating this as a series then plotting it:
+\begin{center}
+\texttt{garch11.makegarch garch\_cond\_var\\
+graph garch\_cond\_var\_g garch\_cond\_var.line}
+\end{center}
+\item We can then check for normality of the standardized residuals of the GARCH process:
+\begin{center}
+\texttt{freeze(normal\_check) belize\_eq.hist}
+\end{center}
+\item Check the LM test again - have we managed to get rid of all the ARCH effects in our GARCH(1,1) model?
+\item Re-specify your equation and try out different variations available in EViews e.g.: EGARCH:
+\begin{center}
+\texttt{belize\_eq.arch(1,1,egarch) pc\_belize c}
+\end{center}
+\item If there is time, forecast the conditional variance from this, or another model, or see the ensuing program.
+\end{enumerate}
+
+
+\newpage
+\subsubsection*{Program for Workshop Five}
+\noindent wfopen C:$\backslash$$<$insertfilepath$>$$\backslash$fxdata.csv\\
+for \%series belize kazahk kenya mexico usd\\
+\indent	genr pc\_\{\%series\}=@pc(\{\%series\})\\
+\indent	graph \{\%series\}\_g.line pc\_\{\%series\}\\
+next\\
+graph all\_g.merge belize\_g kazahk\_g kenya\_g mexico\_g usd\_g\\
+for \%series belize kazahk kenya mexico usd\\
+\indent	!schwarz=999999999999999999999999\\
+\indent	for !p = 1 to 10\\
+\indent \indent		equation \{\%series\}\_eq\{!p\}.ls pc\_\{\%series\} c ar(1 to !p)\\
+\indent \indent		if \{\%series\}\_eq\{!p\}.@schwarz$<$!schwarz then\\
+\indent \indent \indent			!schwarz=\{\%series\}\_eq\{!p\}.@schwarz\\
+\indent \indent \indent			!bestlag=!p\\
+ \indent \indent		endif\\
+\indent	next\\
+\indent	equation \{\%series\}\_eq\_bestlag.ls pc\_\{\%series\} c ar(1 to !bestlag)\\
+\indent	freeze(archtest\_\{\%series\}) \{\%series\}\_eq\_bestlag.archtest(4)\\
+\indent	equation garch\_\{\%series\}.arch pc\_\{\%series\} c ar(1 to !bestlag)\\
+\indent	freeze(garch\_\{\%series\}\_cond\_std\_g) garch\_\{\%series\}.garch\\
+\indent	freeze(garch\_\{\%series\}\_cond\_var\_g) garch\_\{\%series\}.garch(v)\\
+\indent	garch\_\{\%series\}.makegarch garch\_\{\%series\}\_cond\_v\\
+\indent	graph garch\_\{\%series\}\_cond\_var\_g1.line garch\_\{\%series\}\_cond\_v\\
+\indent	freeze(garch\_\{\%series\}\_hist) garch\_\{\%series\}.hist\\
+\indent	freeze(garch\_\{\%series\}\_archtest) garch\_\{\%series\}.archtest(4)\\
+\indent	garch\_\{\%series\}.forecast garch\_\{\%series\}\_fm garch\_\{\%series\}\_fse garch\_\{\%series\}\_fgarch\\
+\indent	equation	\{\%series\}\_eq\_egarch.arch(1,1,egarch) pc\_\{\%series\} c ar(1 to !bestlag)\\
+next
+
+
+
+
+
+\end{document}
