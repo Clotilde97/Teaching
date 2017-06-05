@@ -1,7 +1,6 @@
-## A Preliminary Set of Notes for the Dissertation Topic: *Forecasting with 'Big Data’*
+## A Set of Notes for the Topic: *Forecasting with 'Big Data’*
 
-This is a basic guide to both the resources required and the required reading list for MSc Dissertation Topic number 102. While not exhaustive by any means, it provides a guide to the most useful tools and practices according to relevant practice in both the private sector and academia. It also has a couple of references to forecasting with Confidence Indicators, which might be useful in case you wanted to take
-an approach approach which utilizes smaller data, albeit still within a ‘model averaging’/selection framework.
+This is a basic guide to both the resources required and the required reading list for MSc Dissertation Topic number 102. While not exhaustive by any means, it provides a guide to the most useful tools and practices according to relevant practice in both the private sector and academia. It also has a couple of references to forecasting with Confidence Indicators, which might be useful in case you wanted to take an approach approach which utilizes smaller data, albeit still within a ‘model averaging’/selection framework. To be clear, your objective should be to design an application for a specific problem which utilizes a set of forecasting methods and then compares them against a specific benchmark.
 
 ### Time Series Textbooks
 
