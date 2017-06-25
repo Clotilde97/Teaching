@@ -6,6 +6,11 @@
 \usepackage{listings}
 \usepackage{lmodern}
 \usepackage[T1]{fontenc}
+\usefonttheme{professionalfonts}
+%\usefonttheme{serif}
+\usepackage{fontspec}
+%\usepackage{kantlipsum}
+\setbeamerfont{note page}{family*=pplx,size=\footnotesize}
 \useoutertheme{infolines}
 \usepackage[framemethod=tikz]{mdframed}
 \usetikzlibrary{shadows}
@@ -15,14 +20,11 @@
 \definecolor{myred}{RGB}{165,0,38}
 \usepackage{graphicx}
 \usepackage{caption}
-
 \newcommand{\lenitem}[2][.55\linewidth]{\parbox[t]{#1}{#2\strut \strut}}
 
 \usetheme{Frankfurt}
 
    \usefonttheme{professionalfonts} 
-\setbeamertemplate{itemize items}[circle]
-
 \newenvironment{variableblock}[3]{%
   \setbeamercolor{block body}{#2}
   \setbeamercolor{block title}{#3}
@@ -72,8 +74,10 @@
 \item Item
 \end{itemize}
 }
-
-
+%\setbeamercolor{itemize item}{fg=yellow,bg=white}
+%\setbeamertemplate{itemize items}[circle]
+\setbeamercolor{enumerate item}{ fg=red}
+\setbeamercolor{item projected}{bg=myblue}
 \section{Title/Intro}
 \subsection{Subsection}
 
@@ -84,8 +88,12 @@
   basicstyle=\small\sffamily,
   numbers=left,
   numberstyle=\tiny,
-  numbersep=3pt,
-  frame=tb,
+  numbersep=5pt,
+  framexleftmargin=3mm,
+  frame=shadowbox, rulesepcolor=\color{gray},
+  numberstyle=\normalfont\tiny\color{myred},
+%  fillcolor=\color{gray},
+  rulecolor=\color{black},
   columns=fullflexible,
   backgroundcolor=\color{white},
   linewidth=0.9\linewidth,
@@ -94,14 +102,15 @@
 
 
 \begin{document}
-
-\title{An Introduction to the Command Line}
+\small
+\title{An Introduction to the Command Line Interface} 
 \date{}
-\author{Charles Rahal and Felix Tropf \\ Department of Sociology, University of Oxford}
+\author[Charles Rahal and Felix Tropf \\ Department of Sociology]{\includegraphics[width=0.225\textwidth]{ncrmlogo}\hspace{1.175in} \includegraphics[width=0.15\textwidth]{esrclogo}\vspace{0.2in} \\Charles Rahal and Felix Tropf \\ University of Oxford, Department of Sociology}
 \frame{\titlepage 
 \begin{center}
-\vspace{-0.5in}
-\texttt{25th June, 2017}\\ \vspace{0.2in}
+\vspace{-0.65in}
+\texttt{26th June, 2017}\\ \vspace{0.2in}
+
 \color{myblue}NCRM Summer School - University of Oxford\color{black}\\ \vspace{0.1in}
 Slides, code, lecture notes: \color{myred}\url{https://github.com/crahal/Teaching}\color{black}\\ \vspace{0.1in}
 Comments/questions/suggestions: \color{myred}\url{charles.rahal@sociology.ox.ac.uk}\\ \vspace{0.1in}
@@ -114,15 +123,16 @@ Comments/questions/suggestions: \color{myred}\url{charles.rahal@sociology.ox.ac.
 \frame{
 \frametitle{Some Class Administration}
 \begin{itemize}
-\item \textbf{WELCOME!} - to the NCRM Summer School in SocioGenomics! \pause \vspace{0.1in}
-\item I'd like to also introduce \href{http://felix-tropf.com/}{\texttt{Felix}}: the TA for this class.\pause \vspace{0.1in}
-\item This is the first of several computer lab workshops - each will focus on different things: e.g. - I'll TA the class ran by Felix after this one on Plink. \pause \vspace{0.1in}
-\item Note: from the pre-sessional materials, you should have set up a command line environment.\vspace{0.05in}
+\item \textbf{WELCOME!} - to the NCRM Summer School in SocioGenomics! \pause \vspace{0.05in}
+\item I'd like to also introduce \href{http://felix-tropf.com/}{\texttt{Felix}}: the TA for this class.\pause \vspace{0.05in}
+\item This is the first of several computer workshops - each focusing on different things. \pause \vspace{0.05in}
+\item Other classes are different, involving the practical use of the tools described here. \pause \vspace{0.05in}
+\item From the pre-sessional materials, you should have set up a CLI:\vspace{0.05in}
 \begin{itemize}
-\item \textbf{Windows:}, this will involve a virtual machine. If you haven't managed this, I'll help you directly after this session or this evening before or after dinner.\vspace{0.05in}
-\item \textbf{Linux or Mac:} you already have a command line -- nothing extra required. \pause \vspace{0.1in}
+\item \textbf{Windows:} this will involve a VM. If you haven't managed this, I'll help you directly after this session or this evening before or after dinner.\vspace{0.05in}
+\item \textbf{Linux or Mac:} you already have a command line -- nothing extra required. \pause \vspace{0.05in}
 \end{itemize}
-\item However: For a lot of classes, this isn't necessary, where a simple R (more often) or Python (less often) will be more than sufficient. \pause \vspace{0.1in}
+\item However: for a lot of classes, this isn't necessary, where a simple R (more often) or Python (less often) will be more than sufficient in your Windows environment. \pause \vspace{0.05in}
 \item The CLI will only be required for some classes, but practicing with it this week provides \textbf{invaluable} experience for HPCs (an integral part of genomics).
 \end{itemize}
 }
@@ -131,9 +141,9 @@ Comments/questions/suggestions: \color{myred}\url{charles.rahal@sociology.ox.ac.
 \subsection{}
 \frame{
 \frametitle{Why Use the Command Line?}
-We definitely need to first further motivate \emph{why} we want to use the command line. Although there are many reasons for utilizing it, and conversely many reasons for maintaining a GUI for a lot of tasks, CLIs are important for these reasons especially:\vspace{0.1in}\pause
+Lets first further motivate \emph{why} we want to use the command line. Although there are many reasons for utilizing it, and conversely many reasons for maintaining a GUI for a lot of tasks, CLIs are important for these reasons especially:\vspace{0.1in}\pause
 \begin{itemize}
-\item Genetics datasets are \textbf{BIG}. The just released UK Biobank dataset is about 8tb. This necessitates the use of \textbf{H}igh \textbf{P}erformance \textbf{C}omputers (HPCs) -- this is due to the reduced cost of genomic sequencing (specifically NGS).\vspace{0.1in}\pause
+\item Genetics datasets are \textbf{BIG}. The just released UK Biobank dataset is about 8tb. This necessitates the use of \textbf{H}igh \textbf{P}erformance \textbf{C}omputers (HPCs). The recent flood of genetic data is due to the reduced cost of genomic sequencing (specifically NGS) from around 2008.\vspace{0.1in}\pause
 \item Automation/Replication:  No matter how complex the command or series of commands, the CLI doubles as a scripting language (shell scripts - which we will briefly discuss if there's time) which can be ran as a batch.\vspace{0.1in}\pause
 \item Control: Commands are often more powerful and precise, giving more control over the operations to be performed\vspace{0.1in}\pause
 \item Software tools: A number of genetics software tools will only run in Linux/Mac environments.  
@@ -145,15 +155,15 @@ We definitely need to first further motivate \emph{why} we want to use the comma
 \frame{
 \frametitle{Our Friend - ARCUS (or AWS)}
 \begin{itemize}
-\item Why have this class at all? Our friend ARCUS \href{http://www.arc.ox.ac.uk/content/introduction-linux}{\color{blue}provides some motivation}:\vspace{0.1in}
+\item Why have this class at all? Our friend ARCUS \href{http://www.arc.ox.ac.uk/content/introduction-linux}{\color{myred}provides some motivation}:\vspace{0.1in}
 \begin{center}
-   \includegraphics[width=0.75\textwidth]{figure1.png}
+   \includegraphics[width=0.9\textwidth]{figure1.png}
 \end{center}
 \pause
 \item The CLI can seem like a harsh, unforgiving environment.\vspace{0.1in} \pause
-\item \href{http://www.urbandictionary.com/define.php?term=rm\%20-rf\%20\ q\%2F}{\color{blue}Urban Dictionary} calls the famous CLI command \texttt{rm -rf}:
+\item \href{http://www.urbandictionary.com/define.php?term=rm\%20-rf\%20\ q\%2F}{\color{myred}Urban Dictionary} calls the famous CLI command \texttt{rm -rf}:
 \begin{center}
- \emph{`the finest compression avaliable under UNIX/Linux...\\ unfortunatly, there is no decompressor avaliable.`}\vspace{0.1in}\pause
+ \emph{`the finest compression available under UNIX/Linux...\\ unfortunately, there is no decompresser available.'}\vspace{0.1in}\pause
  \end{center}
 \item However: \textbf{the potential is endless!}\vspace{0.1in}\pause
 \item (and a Virtual Machine is the best way to learn).
@@ -163,7 +173,9 @@ We definitely need to first further motivate \emph{why} we want to use the comma
 \subsection{}
 \frame{
 \frametitle{This isn't a scary course!}
-Melinda told me that a good strategy is to put a picture of your cat on the slides to persuade participants that the course isn't scary...  \pause
+\begin{itemize}
+\item Melinda told me that a good strategy is to put a picture of your cat on the slides to persuade participants that the course isn't scary...  \pause
+\end{itemize}
 \begin{figure}[!b]
 \centering  
 \caption{This isn't a scary course!}\label{figure_5}
@@ -182,10 +194,10 @@ Melinda told me that a good strategy is to put a picture of your cat on the slid
 \item Before we discuss \emph{exactly} what the CLI is, we should briefly talk about the history of what is now known as *nix-like computing.\vspace{0.1in}\pause
 \item Unix was created 1969 at Bell Laboratories -- then a development division at AT\&T -- by Ken Thompson and Dennis Richie.\vspace{0.1in}\pause
 \item All software previously hardware dependent, written in assembler language.\vspace{0.1in}\pause
-\item However -a critical feature of Unix was that it is proprietary.\vspace{0.1in}\pause
-\item U. of California, Berkley developed BSD -- based on the AT\&T code base. Commercial Unix derivatives emerged through the 1980s.\vspace{0.1in}\pause
-\item However, the breakthrough came in September 1991, when Linus Torvalds released the Linux operating system kernel.\vspace{0.1in}\pause
-\item \textbf{Utilized everywhere:} i.e. Android operating system and Chrome OS which runs on Chromebooks (televisions,  smart-watches, servers, etc).\vspace{0.1in}\pause
+\item However -- a critical feature of Unix was that it is proprietary.\vspace{0.1in}\pause
+\item University of California, Berkley developed BSD -- based on the AT\&T code base. Commercial Unix derivatives emerged through the 1980s (i.e. Mac OS).\vspace{0.1in}\pause
+\item The breakthrough came in September 1991, when Linus Torvalds released the Linux operating system kernel.\vspace{0.1in}\pause
+\item \textbf{Utilized everywhere:} i.e. Android operating system and Chrome OS which runs on Chromebooks (televisions,  smart-watches, servers, etc).\vspace{0.1in}
 \end{itemize}
 }
 
@@ -194,38 +206,47 @@ Melinda told me that a good strategy is to put a picture of your cat on the slid
 \frametitle{The File Tree}
 \vspace{-.3in}
 \begin{center}
-   \includegraphics[width=0.75\textwidth]{Infographic2.png}
+   \includegraphics[width=0.85\textwidth]{Infographic2.png}
 \end{center}
-You might also find  \texttt{/opt:} optional software or \texttt{/tmp:} temporary space.
+\
+\begin{itemize}
+\item You might also find  \texttt{/opt:} optional software or \texttt{/tmp:} temporary space.
+\end{itemize}
 }
 
 \subsection{}
 \frame{
 \frametitle{System Architecture}
 \begin{center}
-   \includegraphics[width=0.75\textwidth]{Infographic1.png}
+   \includegraphics[width=0.7\textwidth]{Infographic1.png}
 \end{center}
-Importantly, the shell is a program that takes your commands from the keyboard and gives them to the operating system to perform.
+\begin{itemize}
+\item The shell is a friendly interface that translates your commands into some low-level calls to the kernel.
+\end{itemize}
 }
 
 \subsection{}
 \frame{
 \frametitle{The Terminal}
-The terminal is a program which lets you interact with the shell:\vspace{0.1in}
+\begin{itemize}
+\item The terminal is a program which lets you interact with the shell:\vspace{0.1in}
+\end{itemize}
 \begin{center}
    \includegraphics[width=0.75\textwidth]{theterminal.png}
 \end{center}
-If the last character of your shell prompt is \# rather than \$, you are operating as the superuser. This means that you have administrative privileges. This can be potentially dangerous, since you are able to delete or overwrite any file on the system. Unless you absolutely need administrative privileges, do not operate as the superuser (try \texttt{whoami} and \texttt{sudo whoami}).
+\begin{itemize}
+\item If the last character of your shell prompt is \# rather than \$, you are operating as the superuser. This means that you have administrative privileges. This can be potentially dangerous, since you are able to delete or overwrite any file on the system. Unless you absolutely need administrative privileges, do not operate as the superuser (try \texttt{whoami} and \texttt{sudo whoami}).
+\end{itemize}
 }
 
-\section{Fundamental CLI Commands}
+\section{Fundamental Commands}
 \subsection{}
 \begin{frame}[fragile]{Examples}
 \frametitle{Fundamental CLI Commands: \texttt{man}}
 \begin{itemize}
 \item The \texttt{man} command shows the manual for a given page, including information on options and usage.\vspace{0.1in}
 \item This is the default resource for getting help on specific commands.\vspace{0.1in}
-\begin{lstlisting}[style=BashInputStyle]
+\begin{lstlisting}[style=BashInputStyle, title=The \texttt{man} Command]
 user@system:~$ man echo
 ECHO(1)                  User Commands                 ECHO(1)
 
@@ -244,8 +265,8 @@ SYNOPSIS
 \begin{frame}[fragile]{Examples}
 \frametitle{Fundamental CLI Commands: \texttt{whatis}}
 \begin{itemize}
-\item The whatis command gives a short summary description of the specific command, and command inputs can be stacked together. \vspace{0.2in}
-\begin{lstlisting}[style=BashInputStyle]
+\item The \texttt{whatis} command gives a short summary description of the specific command, and command inputs can be stacked together. \vspace{0.2in}
+\begin{lstlisting}[style=BashInputStyle,title=The \texttt{whatis} Command]
 user@system:~$ whatis echo ls
 echo (1)             - display a line of text
 ls (1)               - list directory contents
@@ -264,7 +285,7 @@ ls (1)               - list directory contents
 \begin{itemize}
 \item \texttt{ls} is a Linux shell command that lists directory contents of files and directories.\vspace{0.2in}
 \end{itemize}
-\begin{lstlisting}[style=BashInputStyle]
+\begin{lstlisting}[style=BashInputStyle,title=The \texttt{ls} Command]
 user@system:~$ ls
 Desktop Documents Downloads Music Pictures Public Videos
 \end{lstlisting}
@@ -281,7 +302,7 @@ Desktop Documents Downloads Music Pictures Public Videos
 \begin{itemize}
 \item However, this isn't much use without knowing \emph{where} we are in the file tree. \vspace{0.2in}
 \end{itemize}
-\begin{lstlisting}[style=BashInputStyle]
+\begin{lstlisting}[style=BashInputStyle,title=The \texttt{pwd} Command]
 user@system:~$ pwd
 /home/user
 \end{lstlisting}
@@ -295,22 +316,22 @@ user@system:~$ pwd
 \begin{frame}[fragile]{Examples}
 \frametitle{Fundamental CLI Commands: \texttt{mkdir} and \texttt{cd}}
 \begin{itemize}
-\item We should make a new directory (or folder -- a container for other files) for the purposes of following along with these examples. \vspace{0.2in}
+\item We should make a new directory for the summer school. \vspace{0.05in}
 \end{itemize}
-\begin{lstlisting}[style=BashInputStyle]
-user@system:~$ mkdir nix
+\begin{lstlisting}[style=BashInputStyle,,title=The \texttt{mkdir} and \texttt{cd} Commands]
+user@system:~$ mkdir NCRM
 user@system:~$ ls
-nixTextbookChapter
-user@system:~$ cd nix
-user@system:~/nix$ pwd
-/home/user/nix
+NCRMTextbookChapter
+user@system:~$ cd NCRM
+user@system:~/NCRM$ pwd
+/home/user/NCRM
 \end{lstlisting}
 \vspace{0.1in}
 \begin{itemize} 
-\item This brings us to \emph{absolute} and \emph{relative} paths. \vspace{0.1in}
-\item From the documents folder above, we can navigate to the new folder (\texttt{nix}) through the relative path or through the absolute path. \vspace{0.1in}
-\item The \texttt{cd} command is used to change the current directory.\vspace{0.1in}
-\item There are multiple ways of identifying the same file path in the directory tree.\vspace{0.1in}
+\item This brings us to the concept of \emph{absolute} and \emph{relative} paths. \vspace{0.05in}
+\item From the documents folder above, we can navigate to the new folder (\texttt{NCRM}) through the relative path or through the absolute path. \vspace{0.05in}
+\item The \texttt{cd} command is used to change the current directory.\vspace{0.05in}
+\item There are multiple ways of identifying the same file path in the directory tree.
 \end{itemize}
 \end{frame}
 
@@ -320,9 +341,9 @@ user@system:~/nix$ pwd
 \begin{itemize}
 \item The \texttt{touch} command is the easiest way to create new, empty files...
 \end{itemize}
-\begin{lstlisting}[style=BashInputStyle]
-user@system:~/nix$ touch testfile
-user@system:~/nix$ ls
+\begin{lstlisting}[style=BashInputStyle,title=The \texttt{touch} Command]
+user@system:~/NCRM$ touch testfile
+user@system:~/NCRM$ ls
 testfile
 \end{lstlisting}
 \vspace{0.1in}
@@ -336,18 +357,19 @@ testfile
 \begin{frame}[fragile]{Examples}
 \frametitle{Fundamental CLI Commands: \texttt{rm}}
 \begin{itemize}
-\item Now that we've learnt how to create files and directories, lets look at removing them:
+\item Now that we can create files and directories, lets look at removing them:
 \end{itemize}
-\begin{lstlisting}[style=BashInputStyle]
-user@system:~/nix$ cd ..
-user@system:~/$ rm -ri nix
-rm: remove directory 'nix'?
+\begin{lstlisting}[style=BashInputStyle,title=The \texttt{rm} Command]
+user@system:~/NCRM$ cd ..
+user@system:~/$ rm -ri NCRM
+rm: remove directory 'NCRM'?
 \end{lstlisting}
 \vspace{0.1in}
 \begin{itemize}
-\item This shows how we can stack options together, where \texttt{rm -ri} is the equivalent to \texttt{rm -r -i}. \vspace{0.1in}
-\item  However, command line options are not universal between commands, and implementation across different operating systems may vary.\vspace{0.1in}
-\item We should also note the existence of \texttt{rmdir}, the negative equivalent to \texttt{mkdir}, which removes \emph{empty} directories.
+\item This shows how we can stack options together, where \texttt{rm -ri} is the equivalent to \texttt{rm -r -i}. \vspace{0.05in}
+\item However, command line options are not universal between commands, and implementation across different operating systems may vary.\vspace{0.05in}
+\item We should also note the existence of \texttt{rmdir}, the negative equivalent to \texttt{mkdir}, which removes \emph{empty} directories. \vspace{0.05in}
+\item Note the use of \texttt{..} to move up a directory (and many other similar shortcuts).
 \end{itemize}
 \end{frame}
 
@@ -357,10 +379,10 @@ rm: remove directory 'nix'?
 \begin{itemize}
 \item It seems only natural that we now learn how to move, copy and rename files.
 \end{itemize}
-\begin{lstlisting}[style=BashInputStyle]
-user@system:~/nix$ cp testfile ..
-user@system:~/nix$ rm ../testfile
-user@system:~/nix$ mv testfile ..
+\begin{lstlisting}[style=BashInputStyle,title=The \texttt{mv} and \texttt{cp} Commands]
+user@system:~/NCRM$ cp testfile ..
+user@system:~/NCRM$ rm ../testfile
+user@system:~/NCRM$ mv testfile ..
 \end{lstlisting}
 \vspace{0.1in}
 \begin{itemize}
@@ -378,11 +400,12 @@ user@system:~/nix$ mv testfile ..
 \item \texttt{find} and \texttt{locate} search for files and directories (with the latter being faster -- performing on a database of indexed filenames).\vspace{0.1in}
 \item  \texttt{date} displays or sets (with the option \texttt{-s}) the system time, and \texttt{cal} displays the calender.\vspace{0.1in}
 \item \texttt{history} and specifically - \texttt{history [NUM]} reports the last \texttt{[NUM]} commands.\vspace{0.1in}
-\item We can \texttt{exit} from the current terminal session, \texttt{logout} as a specific user, or \texttt{shutdown} the machine entirely.
+\item We can \texttt{exit} from the current terminal session, \texttt{logout} as a specific user, or \texttt{shutdown} the machine entirely.\vspace{0.1in}
+\item We can also \texttt{tar} items together, and then \texttt{gzip} or \texttt{bzip2} them up.
 \end{itemize}
 \end{frame}
 
-\section{Slightly More Advanced Concepts}
+\section{More Advanced Concepts}
 \subsection{}
 \begin{frame}[fragile]{Examples}
 \frametitle{Editors at the Command Line}
@@ -391,9 +414,7 @@ user@system:~/nix$ mv testfile ..
 \item Unlike many GUI based editors, the mouse does not move the cursor. Unlike PC editors, you cannot modify text by highlighting it with a mouse.\vspace{0.1in}
 \item Lets use \texttt{nano} to create a file which we will use for some examples later on: a list of all the fruits we can think of (call the file \texttt{allfruits}). \vspace{0.1in}
 \end{itemize}
-\begin{table}
-\caption*{Introducing Text Editors at the CLI: \texttt{nano allfruits}}
-\begin{lstlisting}[style=BashInputStyle]
+\begin{lstlisting}[style=BashInputStyle,title=Introducing Text Editors at the CLI: \texttt{nano allfruits}]
 Apple
 Apricot
 Avocado
@@ -401,14 +422,7 @@ Avocado
 .
 "allfruits" 90 lines, 846 characters
 \end{lstlisting}
-\end{table}
 \end{frame}
-
-
-
-
-
-
 
 \subsection{}
 \begin{frame}[fragile]{Examples}
@@ -418,13 +432,10 @@ Avocado
 \item We can redirect standard output to specific files using the ‘>’ character, and append to a file using ‘> >’.
 \item Commands can also accept input from ‘standard input’ (STDIN), which defaults to the keyboard: to redirect from STDIN, we use the ‘<’ character.
 \end{itemize}
-\begin{table}
-%\caption*{Introducing Text Editors at the CLI: \texttt{nano allfruits}}
-\begin{lstlisting}[style=BashInputStyle]
-user@system:~/nix$ ls > filelist.txt
-user@system:~/nix$ sort < filelist.txt
+\begin{lstlisting}[style=BashInputStyle,title=STDOUT and STDIN]
+user@system:~/NCRM$ ls > filelist.txt
+user@system:~/NCRM$ sort < filelist.txt
 \end{lstlisting}
-\end{table}
 \begin{itemize}
 \item There is also a third stream which will go unexamined (‘standard error’ or STDERR) which is used for error messages – and also defaults to the terminal.
 \end{itemize}
@@ -437,14 +448,15 @@ user@system:~/nix$ sort < filelist.txt
 \begin{itemize} 
 \item \texttt{sort:} Sorts STDIN and outputs the sorted result on standard output.\vspace{0.05in}
 \item \texttt{uniq}: Given a sorted stream of data from STDIN, it removes duplicates.\vspace{0.05in}
-\item \texttt{grep}: Examines each line of data it receives from standard input and outputs every line that contains a specified pattern of characters.\vspace{0.05in}
 \item \texttt{head}: Outputs the first few lines of its input (defaults to first 10 lines).\vspace{0.05in}
 \item \texttt{cat}: Concatenates files and displays their contents, or just displays contents if given one input.\vspace{0.05in}
+\item \texttt{less}: used to view (but not change) the contents of a text file one screen at a time.\vspace{0.05in}
 \item \texttt{cut}: Divides a file into several columns.\vspace{0.05in}
 \item \texttt{nl}: prints the line number before data.\vspace{0.05in}
 \item \texttt{wc}: which prints the count of lines, words and characters.\vspace{0.05in}
 \end{itemize}
 \end{frame}
+
 
 \subsection{}
 \begin{frame}[fragile]{Examples}
@@ -454,13 +466,10 @@ user@system:~/nix$ sort < filelist.txt
 \item The standard output of one command is fed into the standard input of another, enabling you to chain together individual commands to create something really powerful.\vspace{0.1in}
 \item The example below \emph{pipes} the output from \texttt{ls} into the \texttt{head} command which takes the input \texttt{1} to show us the first 1 line of the \texttt{ls} output: we've chained the two commands together.
 \end{itemize}
-\begin{table}
-%\caption*{Introducing Text Editors at the CLI: \texttt{nano allfruits}}
-\begin{lstlisting}[style=BashInputStyle]
-user@system:~/nix$ ls | head -1
+\begin{lstlisting}[style=BashInputStyle, title=The Pipe \texttt{(|)}]
+user@system:~/NCRM$ ls | head -1
 allfruits
 \end{lstlisting}
-\end{table}
 \end{frame}
 
 \subsection{}
@@ -474,26 +483,41 @@ allfruits
 \item \texttt{*} represents zero or more characters
 \item \texttt{?} represents a single character.
 \end{enumerate}
-\begin{table}
-%\caption*{Introducing Text Editors at the CLI: \texttt{nano allfruits}}
-\begin{lstlisting}[style=BashInputStyle]
-user@system:~/nix$ touch fileonea fileoneb filetwoa filetwob
-user@system:~/nix$ ls file*a
+\begin{lstlisting}[style=BashInputStyle, title=Wildcards: \texttt{*} and \texttt{?}]
+user@system:~/NCRM$ touch fileonea fileoneb filetwoa filetwob
+user@system:~/NCRM$ ls file*a
 fileonea filetwoa
-user@system:~/nix$ ls filetwo?
+user@system:~/NCRM$ ls filetwo?
 filetwoa filetwob
 \end{lstlisting}
-\end{table}
 \item A regular expression (or `regex') includes such functionality, but is a much more powerful pattern matcher beyond the scope of this introduction.
 \end{itemize}
 \end{frame}
+
+
+\subsection{}
+\begin{frame}[fragile]{Examples}
+\frametitle{Grep}
+\begin{itemize} 
+\item One particularly useful filter is \texttt{grep}, which examines each line of data it receives from standard input and outputs every line that contains a specified pattern of characters.\vspace{0.05in}
+\item It utility filters input, looking for matches.\vspace{0.05in}
+\item Lets use it to find all examples of berries within our fruits file.\vspace{0.05in}
+\item In our example, we pass it the -E option, which allows it to interpret the wildcard:\vspace{0.05in}
+\begin{lstlisting}[style=BashInputStyle, title=The \texttt{grep} Command]
+user@system:~/NCRM$ grep -E *berry allfruits
+strawberry
+raspberry
+blackberry
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
 
 \subsection{}
 \begin{frame}[fragile]{Examples}
 \frametitle{Users, Groups and Permissions}
 \begin{itemize}
-\item Permissions  specify what a user can and cannot do.\vspace{0.05in}
-\item  Perhaps, for example, you want to lock your files so other people cannot change them or secure system files from damage. \vspace{0.05in}
+\item Permissions  specify what a user can and cannot do: i.e. lock your files so other people cannot change them or secure system files from damage. \vspace{0.05in}
 \item Permissions are split into three distinct categories which govern the ability to: Read: \texttt{r}, Write: \texttt{w} and Execute: \texttt{x}.\vspace{0.05in}
 \item For every file, we need to define permissions for potential users: 
 \begin{itemize}
@@ -502,9 +526,9 @@ filetwoa filetwob
 \item Others (o).\vspace{0.05in}
 \end{itemize}
 \item There are typically only two people who can manage the permissions of a given file or directory: the owner and the root user. \vspace{0.05in}
-\item To view the permissions associated with an individual file, we can use the \texttt{-l} option on the \texttt{ls} command:\\
+\item To view the permissions associated with an individual file, we can use the \texttt{-l} option on the \texttt{ls} command:\\ \vspace{0.05in}
 \begin{lstlisting}[style=BashInputStyle]
-user@system:~/nix$ ls -l allfruits
+user@system:~/NCRM$ ls -l allfruits
 -rw-rw-r-- 1 user user 846 May 29 14:57 allfruits
 \end{lstlisting}
 \end{itemize}
@@ -517,66 +541,65 @@ user@system:~/nix$ ls -l allfruits
 \item The first character determines whether it is a file (\texttt{-}) or a directory (\texttt{d}).\vspace{0.05in}
 \item We have information on the permissions for \texttt{u}, \texttt{g} and \texttt{o}.\vspace{0.05in}
 \item A \texttt{-} represents the omission of a permission.\vspace{0.05in}
-\item To change the permissions, use the \texttt{chmod}, including information on: 1.) Who are we changing the permission for? 2.) Are we giving (\texttt{+}) or taking permission (\texttt{-})?, 3.) Which permissions are we setting? \vspace{0.05in}
+\item Change permissions with \texttt{chmod}, specifying: 1.) Who? 2.) Giving (\texttt{+}) or taking (\texttt{-})?, 3.) Which permissions\vspace{0.05in}
 \item For example, lets take away read permissions from the group and others:
-\begin{lstlisting}[style=BashInputStyle]
-user@system:~/nix$ chmod og-r allfruits
-user@system:~/nix$ ls -l allfruits
+\begin{lstlisting}[style=BashInputStyle, title=The \texttt{chmod} Command]
+user@system:~/NCRM$ chmod og-r allfruits
+user@system:~/NCRM$ ls -l allfruits
 -rw------- 1 user user 846 May 29 15:09 allfruits
 \end{lstlisting}\vspace{0.05in}
-\item Importantly,  permissions are not inherited from the parent directory - and the recursive option (\texttt{-R}) for \texttt{chmod} can be especially useful.\vspace{0.05in}
+\item Permissions are not inherited from the parent directory (unless \texttt{-R}: recursive).\vspace{0.05in}
 \item There are a range of `short-hand' commands (e.g. \texttt{chmod 751 <filename>}).
 \end{itemize}
 \end{frame}
 
-\subsection{}
-\begin{frame}[fragile]{Examples}
-\frametitle{Archiving}
-\begin{itemize}
-\item Archiving in our context is similar to the familiar .zip extension in Windows. \vspace{0.05in}
-\item Introducing the tape archive -- \texttt{tar}: extract with \texttt{-x}, create with \texttt{-c.}.\vspace{0.05in}
-\item Typically compressed with \texttt{gzip} (Lempel-Ziv) or \texttt{bzip2} (Burrows-Wheeler).\vspace{0.05in}
-\end{itemize}
-\begin{lstlisting}[style=BashInputStyle]
-user@system:~/nix$ head -5 allfruits > top5fruits
-user@system:~/nix$ ls -la
--rw------- 1 user user  846 May 30 13:32 allfruits
--rw-rw-r-- 1 user user   38 May 30 13:33 first5fruits
-user@system:~/nix$ tar -cvf fruits.tar allfruits first5fruits
-user@system:~/nix$ gzip fruits.tar
-user@system:~/nix$ tar -cvf fruits.tar allfruits first5fruits
-user@system:~/nix$ bzip2 fruits.tar
-user@system:~nix$ bzip2 ls -l
--rw------- 1 user user 10240 May 30 14:07 allfruits
--rw-rw-r-- 1 user user    38 May 30 13:33 first5fruits
--rw-rw-r-- 1 user user   214 May 30 14:13 fruitlists.tar.bz2
--rw-rw-r-- 1 user user   224 May 30 14:13 fruitlists.tar.gz
-\end{lstlisting}\vspace{0.05in}
-\end{frame}
+%\subsection{}
+%\begin{frame}[fragile]{Examples}
+%\frametitle{Archiving}
+%\begin{itemize}
+%\item Archiving in our context is similar to the familiar .zip extension in Windows. \vspace{0.05in}
+%\item Introducing the tape archive -- \texttt{tar}: extract with \texttt{-x}, create with \texttt{-c.}.\vspace{0.05in}
+%\item Typically compressed with \texttt{gzip} (Lempel-Ziv) or \texttt{bzip2} (Burrows-Wheeler).\vspace{0.05in}
+%\end{itemize}
+%\begin{lstlisting}[style=BashInputStyle]
+%user@system:~/NCRM$ head -5 allfruits > top5fruits
+%user@system:~/NCRM$ ls -la
+%-rw------- 1 user user  846 May 30 13:32 allfruits
+%-rw-rw-r-- 1 user user   38 May 30 13:33 first5fruits
+%user@system:~/NCRM$ tar -cvf fruits.tar allfruits first5fruits
+%user@system:~/NCRM$ gzip fruits.tar
+%user@system:~/NCRM$ tar -cvf fruits.tar allfruits first5fruits
+%user@system:~/NCRM$ bzip2 fruits.tar
+%user@system:~NCRM$ bzip2 ls -l
+%-rw------- 1 user user 10240 May 30 14:07 allfruits
+%-rw-rw-r-- 1 user user    38 May 30 13:33 first5fruits
+%-rw-rw-r-- 1 user user   214 May 30 14:13 fruitlists.tar.bz2
+%-rw-rw-r-- 1 user user   224 May 30 14:13 fruitlists.tar.gz
+%\end{lstlisting}\vspace{0.05in}
+%\end{frame}
 
-\section{Bash Scripting}
+\section{Scripting}
 \subsection{}
 \begin{frame}[fragile]{Examples}
 \frametitle{Bash Scripting: Introduction}
 \begin{itemize}
-\item Bash scripting performs complex, repetitive tasks with minimal effort.\vspace{0.1in}
-\item A script is just a text file containing commands which could be ran directly.\vspace{0.1in}
-\item It is a convention (albeit unnecessary) to give bash scripts an extension of .sh.\vspace{0.1in}
-\item Lets create our first script (\texttt{myfirstscript.sh}) and describe how it works:\vspace{0.1in}
+\item Bash scripting performs complex, repetitive tasks with minimal effort.\vspace{0.05in}
+\item A script is just a text file containing commands which could be ran directly.\vspace{0.05in}
+\item It is a convention (albeit unnecessary) to give bash scripts an extension of .sh.
 \end{itemize}
-\begin{lstlisting}[style=BashInputStyle]
+\begin{lstlisting}[style=BashInputStyle,title=Our first script: \texttt{myfirstscript.sh}]
 #!/bin/bash
 echo Hello There! Welcome to Bash Scripting!
-\end{lstlisting}\vspace{0.1in}
+\end{lstlisting}\vspace{0.05in}
 \begin{itemize}
-\item The first line is called the `shebang'. We can run the file in two ways:\vspace{0.1in}
+\item The first line is called the `shebang'. We can run the file in two ways:
 \end{itemize}
-\begin{lstlisting}[style=BashInputStyle]
-user@system:~/nix$ ./myfirstscript.sh
+\begin{lstlisting}[style=BashInputStyle,title=Executing \texttt{myfirstscript.sh}]
+user@system:~/NCRM$ ./myfirstscript.sh
 Hello There! Welcome to Bash Scripting!
-user@system:~/nix$ bash myfirstscript.sh
+user@system:~/NCRM$ bash myfirstscript.sh
 Hello There! Welcome to Bash Scripting!
-\end{lstlisting}\vspace{0.1in}
+\end{lstlisting}
 \end{frame}
 
 
@@ -585,19 +608,19 @@ Hello There! Welcome to Bash Scripting!
 \begin{frame}[fragile]{Examples}
 \frametitle{Bash Scripting: Variables}
 \begin{itemize}
-\item Just like in other languages: variables are temporary methods of storing information.\vspace{0.1in}
-\item Setting them requires no \$, but reading them does.\vspace{0.1in}
-\item Lets pass variables to a script which accepts \$1 and \$2 as inputs:\vspace{0.1in}
+\item Just like in other languages: variables are temporary methods of storing information.\vspace{0.05in}
+\item Setting them requires no \$, but reading them does.\vspace{0.05in}
+\item Lets pass variables to a script which accepts \$1 and \$2 as inputs:\vspace{0.05in}
 \end{itemize}
-\begin{lstlisting}[style=BashInputStyle]
+\begin{lstlisting}[style=BashInputStyle,title=Accepting Variables: \texttt{mysecondscript.sh}]
 #!/bin/bash
 echo Hello $1! Message sent from $2!
-\end{lstlisting}\vspace{0.1in}
-\quad and then execute it as before:\vspace{0.1in}
-\begin{lstlisting}[style=BashInputStyle]
-user@system:~/nix$ ./variables.sh Felix Charlie
+\end{lstlisting}\vspace{0.05in}
+\quad and then execute it as before:\vspace{0.05in}
+\begin{lstlisting}[style=BashInputStyle,title=Executing \texttt{mysecondscript.sh}]
+user@system:~/NCRM$ ./variables.sh Felix Charlie
 Hello Felix! Message sent from Charlie!
-\end{lstlisting}\vspace{0.1in}
+\end{lstlisting}\vspace{0.05in}
 \begin{itemize}
 \item There are also a number of special variables: \texttt{\$0}, \texttt{\$n}, \texttt{\$?} etc.
 \end{itemize}
@@ -609,15 +632,15 @@ Hello Felix! Message sent from Charlie!
 \begin{itemize}
 \item We can also ask the user for input using \texttt{read}:
 \end{itemize}
-\begin{lstlisting}[style=BashInputStyle]
+\begin{lstlisting}[style=BashInputStyle,title=Asking for User Input: \texttt{mythirdscript.sh}]
 #!/bin/bash
 echo Hey, Buddy! What is your favorite color?
 read favoritecolor
 echo Wow! $favoritecolor is my favorite color too!
 \end{lstlisting}\vspace{0.1in}
 \quad and then execute it as before:\vspace{0.1in}
-\begin{lstlisting}[style=BashInputStyle]
-user@system:~/nix$ ./readvariable.sh
+\begin{lstlisting}[style=BashInputStyle,title=Executing \texttt{mythirdscript.sh}]
+user@system:~/NCRM$ ./readvariable.sh
 Hey, Buddy! What is your favorite color?
 Blue
 Wow! Blue is my favorite color too!
@@ -626,20 +649,19 @@ Wow! Blue is my favorite color too!
 
 \subsection{}
 \begin{frame}[fragile]{Examples}
-\frametitle{Bash Scripting: Arithmethic}
+\frametitle{Bash Scripting: Arithmetic}
 \begin{itemize}
-\item We can also do simple arithmetic operations using \texttt{let} and \texttt{expr}: \texttt{let} stores the variable, but \texttt{expr} prints it out.\vspace{0.05in}
-\item We can utilize the standard operators of \textbf{+}, \textbf{-}, \textbf{$\backslash$*},\textbf{ /}.\vspace{0.05in}
+\item Do simple arithmetic operations with \texttt{let} (store) and \texttt{expr} (print). We can utilize the standard operators of \textbf{+}, \textbf{-}, \textbf{$\backslash$*},\textbf{ /}.
 \end{itemize}
-\begin{lstlisting}[style=BashInputStyle]
+\begin{lstlisting}[style=BashInputStyle,title=Simple Arithmetic Operations: \texttt{myfourthscript.sh}]
 #!/bin/bash
-let ''a = $1 + $2''
+let ``a = $1 + $2''
 echo adding $1 and $2 together gives $a
 echo multiplying $1 and $2 together gives $(expr $1 \* $2)
-\end{lstlisting}\vspace{0.1in}
-\quad and then execute it as before:\vspace{0.1in}
-\begin{lstlisting}[style=BashInputStyle]
-user@system:~/nix$ ./arithmetic.sh 10 5
+\end{lstlisting}\vspace{0.05in}
+\quad and then execute it as before:
+\begin{lstlisting}[style=BashInputStyle,title=Executing \texttt{myfourthscript.sh}]
+user@system:~/NCRM$ ./arithmetic.sh 10 5
 adding 10 and 5 together gives 15
 multiplying 10 and 5 together gives 50
 \end{lstlisting}\vspace{0.05in}
@@ -653,15 +675,15 @@ multiplying 10 and 5 together gives 50
 \begin{frame}[fragile]{Examples}
 \frametitle{Python and R}
 \begin{itemize}
-\item The lack of a GUI on HPCs requires us to submit our Python and R scripts through the command line rather than an IDE.\vspace{0.05in}
+\item HPCs requires us to submit our Python and R scripts through the CLI.\vspace{0.05in}
 \item This is as simple as writing your R or Python scripts locally and then transferring them (\texttt{scp} or \texttt{rsync}) or writing them using a CLI editor.\vspace{0.05in}
 \item Lets create an example file called \texttt{helloworld} which simply has the single line: \texttt{print(''Hello World! How are you?'')}.\vspace{0.05in}
 \item Assuming Py 2, we can execute \texttt{helloworld} with almost identical output:\vspace{0.05in}
-\begin{lstlisting}[style=BashInputStyle]
-user@system:~/nix$ python helloworld
+\begin{lstlisting}[style=BashInputStyle,title=Executing Python and R Scripts in the CLI]
+user@system:~/NCRM$ python helloworld
 Hello World! How are you?
-user@system:~/nix$ Rscript helloworld
-[1] ''Hello World! How are you?''
+user@system:~/NCRM$ Rscript helloworld
+[1] ``Hello World! How are you?''
 \end{lstlisting}\vspace{0.1in}
 \item We can execute the files with \texttt{./} as above, but this requires a \texttt{shebang}! \#!/usr/bin/Rscript for R and \#!/usr/bin/env python. 
 \end{itemize}
@@ -675,7 +697,7 @@ user@system:~/nix$ Rscript helloworld
 \begin{itemize}
 \item We've gone through the main basic ideas behind the CLI, with the intention of providing some intuition.\vspace{0.05in}\pause
 \item Other courses use these ideas in their application to sociogenomics.\vspace{0.05in}\pause
-\item We didn't really cover: alias-ing, networking, \textbf{ssh-ing}, scheduling, awk and sed. We didn't really consider control statements, or regex.\vspace{0.05in} \pause
+\item We didn't really cover: alias-ing, networking, \textbf{ssh-ing}, scheduling, \texttt{awk} or \texttt{sed}, and we didn't fully consider control statements, or regex.\vspace{0.05in} \pause
 \item Hopefully you now feel as suave with the CLI as this guy:
 \end{itemize}
 \begin{figure}[!b]
