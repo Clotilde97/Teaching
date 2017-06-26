@@ -1,1 +1,1 @@
-## A set of slides for the Introduction to MATLAB workshop taught as part of the Introduction to Econometric Software module and the MSc Economics Dissertations statistics classes.
+A set of slides aimed at teaching [MATLAB](https://uk.mathworks.com/products/matlab.html) to advanced undergraduates and MSc students studying economics.
