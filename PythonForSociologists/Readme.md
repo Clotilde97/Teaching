@@ -21,7 +21,7 @@ in your command prompt/terminal.
 
 ### Lectures
 
-You can find the lectures stored in the *Lectures* subdirectory of this repository. There are no slides, as the classes will be led from the notebooks. The notebooks are predominantly based on those used by the magnanimous Bernie Hogan to teach introductory Python to OII students. The material covered includes:
+You can find the lectures stored in the *Lectures* subdirectory of this repository. There are no slides, as the classes will be led from the notebooks. The notebooks are predominantly based on those used by the magnanimous Bernie Hogan to teach introductory Python to OII students (the homeworks are almost identical, to create parity with students entering his module from other angles). The material covered includes:
 
 1. Primitive data types
 2. Strings
