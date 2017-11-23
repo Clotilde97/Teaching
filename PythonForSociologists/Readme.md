@@ -28,12 +28,13 @@ You can find the lectures stored in the *Lectures* subdirectory of this reposito
 3. Collections
 4. Iterating over a collection
 5. Boolean logic and control statements
-6. User input and error handling
-7. Functions
-8. Opening and writing to files
-9. Programming outside Jupyter
-10. Pseudocode
-11. Next steps
+6. More on loops
+7. User input and error handling
+8. Pseudocode
+9. Functions
+10. Reading Files
+11. Writing Files
+12. Programming outside Jupyter
 
 ### Additional resources
 
