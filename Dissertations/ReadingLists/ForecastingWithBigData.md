@@ -2,10 +2,12 @@
 
 This is a basic guide to both the resources required and the required reading list for MSc Dissertation Topic number 102. While not exhaustive by any means, it provides a guide to the most useful tools and practices according to relevant practice in both the private sector and academia. It also has a couple of references to forecasting with Confidence Indicators, which might be useful in case you wanted to take an approach approach which utilizes smaller data, albeit still within a ‘model averaging’/selection framework. To be clear, your objective should be to design an application for a specific problem which utilizes a set of forecasting methods and then compares them against a specific benchmark.
 
-### Time Series Textbooks
+### Textbooks
 
 There are a number of textbooks which might be useful. Very introductory textbooks which might be useful are [Brooks (2015) – Introductory Econometrics for Finance](https://www.amazon.co.uk/Introductory-Econometrics-Finance-Chris-Brooks/dp/052169468X/ref=asap_bc?ie=UTF8) or [Stock and Watson (2013) – Introduction to Econometrics](https://www.amazon.co.uk/Introduction-Econometrics-James-H-Stock-x/dp/1292071311/). A more encyclopedic time series textbook is [Hamilton (1993) – Time Series Analysis](https://www.amazon.co.uk/Time-Analysis-James-D-Hamilton/dp/9380663439/). You could also look at [Lutkepol (2007) – Introduction to Multiple Time Series Analysis](https://www.amazon.co.uk/New-Introduction-Multiple-Time-Analysis/dp/3540262393), and if that is too
-difficult, consider [Enders (2004) – Applied Econometric Time Series](https://www.amazon.co.uk/Applied-Time-Econometrics-Themes-Modern/dp/0521547873/).
+difficult, consider [Enders (2004) – Applied Econometric Time Series](https://www.amazon.co.uk/Applied-Time-Econometrics-Themes-Modern/dp/0521547873/). 
+
+Some relevant forecasting textbooks include [Applied Economic Forecasting using Time Series Methods by Ghysels and Marcellino](https://www.amazon.co.uk/Applied-Economic-Forecasting-using-Methods/dp/0190622016/ref=sr_1_3?ie=UTF8&qid=1528238738&sr=8-3&keywords=time+series+forecasting), [Time Series Models for Business and Economic Forecasting by Philip Hans Franses](https://www.amazon.co.uk/Time-Models-Business-Economic-Forecasting/dp/0521520916/ref=sr_1_7?ie=UTF8&qid=1528238738&sr=8-7&keywords=time+series+forecasting) and [Forecasting Economic Time Series by Clements and Hendry](https://www.amazon.co.uk/Forecasting-Economic-Time-Clements-Hendry/dp/0521634806/ref=sr_1_32?ie=UTF8&qid=1528238810&sr=8-32&keywords=time+series+forecasting).
 
 ### Software Tools
 
