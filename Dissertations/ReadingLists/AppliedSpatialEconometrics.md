@@ -1,6 +1,6 @@
 ## A Set of Notes for the Topic: *Applied Spatial Econometrics*
 
-This is a basic guide to both the resources required and the required reading list for MSc Dissertation Topic number 103. While not exhaustive by any means, it provides a guide to the most useful tools and practices. To be clear, your objective should be to i.) either design an application of a spatial econometric model in some specific context which interests you, and then comment on how the results vary across choices of spatial weighting matrix, or ii.) use an existing dataset ([such as the Boston dataset augmented by Pace and Gilley (1997)](https://artax.karlin.mff.cuni.cz/r-help/library/spdep/html/boston.html)) and design a significant way to systematically evaluate the effect of spatial weighting matrix specification.
+This is a basic guide to both the resources required and the required reading list for MSc Dissertation Topic number 103. While not exhaustive by any means, it provides a guide to the most useful tools and practices. To be clear, your objective should be to i.) either design an application of a spatial econometric model in some specific context which interests you, and then comment on how the results vary across choices of spatial weighting matrix, or ii.) use an existing dataset ([such as the Boston dataset augmented by Pace and Gilley (1997)](http://lib.stat.cmu.edu/datasets/boston_corrected.txt) and design a significant way to systematically evaluate the effect of spatial weighting matrix specification.
 
 ### Spatial Econometrics Textbooks
 
