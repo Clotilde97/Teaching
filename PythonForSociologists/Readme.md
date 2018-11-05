@@ -5,7 +5,7 @@ This is the repository for teaching Python for Sociologists at the Department of
 
 ### Who/When
 
-This course is aimed at graduate students in sociology who are taking electives with Python as a pre-requisite. Later iterations of the course will more generally target graduate students who are looking to use Python in their research. The course will take place in the Seminar Room G (MRB) at 15.00-17.00 every Friday from the 9th of November to 30 of November (inclusive: i.e. 4 weeks of 2 hours per week). The lectures will last between 90 and 120 minutes.
+This course is aimed at graduate students in sociology who are taking electives with Python as a pre-requisite. Later iterations of the course will more generally target graduate students who are looking to use Python in their research. The course will take place in the Seminar Room G (MRB) at 15.00-17.00 every Friday from the 9th of November to 30 of November (inclusive: i.e. 4 weeks of 2 hours per week). I will be at hand an hour in advance of the first lecture to help with any installation problems. The lectures will last between 90 and 120 minutes.
 
 ### Assignments
 
