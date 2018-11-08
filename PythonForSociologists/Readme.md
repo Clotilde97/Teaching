@@ -36,6 +36,8 @@ You can find the lectures stored in the *Lectures* subdirectory of this reposito
 11. Writing Files
 12. Programming outside Jupyter
 
+Pro tip: to download the notebooks and run them in your own computer, navigate to them in your browser, click on 'raw', then hit ctrl+s or right click 'save-as' and then save them as an .ipynb extension (not .ipynb.txt). If you do not click on the 'raw' button, it will give you html (which is not what you want).
+
 ### Additional resources
 
 There is an exorbitant amount of material out there related to learning python from scratch. Some guides focus on audiences with some existing programming expertise in other language, and some focus on those with no experience at all. Googling 'Learn Python' will bring up a number of online courses, free e-books, etc. One particularly popular resource is  [Codecademy](https://www.codecademy.com/learn/learn-python). In terms of textbooks, Bernie recommends [Python Crash Course: A Hands-On, Project-Based Introduction to Programming](https://www.amazon.co.uk/Python-Crash-Course-Hands-Project-Based/dp/1593276036). However, I also like the Coursera Specialisation ['Python for Everybody'](https://www.coursera.org/learn/python) taught by Charles Severance and the associated textbook [Python for Informatics: Exploring Information](https://www.amazon.co.uk/Python-Informatics-Dr-Charles-Severance/dp/1492339245). I also like['A Byte of Python'](https://python.swaroopch.com/). The main Q&A style forum that most programmers rely heavily on is [Stack Overflow](https://stackoverflow.com/questions/tagged/python-3.x).
